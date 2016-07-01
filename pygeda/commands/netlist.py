@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # pygeda - Support tools for gEDA
 # Copyright (C) 2016  Markus Hutzler
@@ -15,10 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
+from __future__ import print_function, absolute_import, division
 
-import pygeda.lib.command
-
-print("pygeda")
+from cmdparse import Command
 
 
+class Netlist(Command):
+
+    __cmd__ = "netlist"
+    __help__ = "generate netlist from schematics"
+
+    def add_argumants(parser):
+        """Add custom arguments."""
+        pass
+
+    def run(self):
+        """Run command."""
+        pass
