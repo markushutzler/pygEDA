@@ -26,10 +26,25 @@ class Path(Command):
     __cmd__ = "path"
     __help__ = "display used system path"
 
-    def add_argumants(parser):
-        """Add custom arguments."""
-        pass
+    def print_path(self, env):
+        print()
+        print('gEDA:', env.gEDA_path)
+        print('PCB :', env.pcb_path)
+        print('Symbols:')
+        for path in  env.symbol_path:
+            print('      ',path)
+        print('Packages:')
+        for path in  env.package_path:
+            print('      ',path)
+        print('Schematic Files:')
+        for path in  env.schematic_files:
+            print('      ',path)
+        print('PCB File:')
+        print('      ',  env.pcb_file)
+        print('Output Path:')
+        print('      ',  env.output_path)
 
-    def run(self):
+    def run(self, env=None):
         """Run command."""
+        self.print_path(env)
         pass

@@ -26,8 +26,8 @@ if __name__ == "__main__":
     print("DEBUG: add module to sys-path %s" % path)
     sys.path.insert(0, path)
 
-from pygeda.commands.template import Template
-from pygeda.commands.validate import Validate
+from pygeda.commands.path import Path
+import pygeda.lib.env
 
 
 class Pygeda(object):
@@ -39,20 +39,19 @@ def main():
     parser = cmdparse.ArgumentParser(description='Process some integers.')
 
     # Add commands
-    parser.add_command(Template)
-    parser.add_command(Validate)
+    parser.add_command(Path)
 
     # Add global options
-    parser.add_argument("-s", dest="sch", metavar="SCH", nargs='+',
-                        help="schematic files")
-    parser.add_argument("-p", dest="pcb", metavar="PCB", nargs="+",
-                        help="pcb files")
-    parser.add_argument("-c", dest="config", metavar="PCB",
-                        help="project or config file")
+    parser.add_argument("-c", dest="config", metavar="cfg",
+                        help="project or config file", default="pygedarc")
     args = parser.parse_args()
     command = args.command()
-    print("DEBUG: Running command: %s" % command.__cmd__)
-    command.run()
+    env = pygeda.lib.env.Env()
+    try:
+        env.check_project_file(args.config)
+    except IOError as error:
+        parser.error(error)
+    command.run(env)
 
 if __name__ == "__main__":
     exit(main())
