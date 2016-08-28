@@ -19,7 +19,9 @@
 import os
 import subprocess
 import re
+import exceptions
 import ConfigParser
+from pygeda.lib.log import message
 
 
 class Env(object):
@@ -76,14 +78,15 @@ class Env(object):
     def __init__(self):
         # getting system information (GSCHEM)
         try:
-            gEDA_path = subprocess.check_output(["type", "-p", 'gschem']).strip()
+            gEDA_path = subprocess.check_output(["type",
+                                                 "-p", 'gschem']).strip()
             gEDA_path = os.path.realpath(gEDA_path)
             gEDA_path = os.path.split(gEDA_path)[0]
             self.gEDA_path = os.path.split(gEDA_path)[0]
             if not os.path.isdir(self.gEDA_path):
-                raise IOError("'gschem' application not found.")
-        except subprocess.CalledProcessError, IOError:
-            raise IOError("'gschem' application not found.")
+                raise exceptions.IOError("'gschem' application not found.")
+        except (exceptions.IOError, subprocess.CalledProcessError):
+            raise exceptions.IOError("'gschem' application not found.")
         # getting system information (PCB)
         try:
             pcb_path = subprocess.check_output(["type", "-p", 'pcb']).strip()
@@ -92,8 +95,8 @@ class Env(object):
             self.pcb_path = os.path.split(pcb_path)[0]
             if not os.path.isdir(self.pcb_path):
                 raise IOError("'pcb' application not found.")
-        except subprocess.CalledProcessError, IOError:
-            raise IOError("'pcb' application not found.")
+        except (exceptions.IOError, subprocess.CalledProcessError):
+            message("'pcb' application not found.", level="W")
 
         # collect symbol paths
         for path in self.gschem_properties('component-library'):
@@ -102,8 +105,9 @@ class Env(object):
 
         # collect packages
         self.package_path.append('./packages')
-        self.package_path.append(self.pcb_path+'/share/pcb/newlib')
-        self.package_path.append(self.pcb_path+'/share/pcb/pcblib-newlib')
+        if self.pcb_path:
+            self.package_path.append(self.pcb_path+'/share/pcb/newlib')
+            self.package_path.append(self.pcb_path+'/share/pcb/pcblib-newlib')
 
     def get_config(self, section, field, default=None):
         try:
@@ -137,8 +141,8 @@ class Env(object):
 
         # check section Options
         self.project_name = self.get_config('Options', 'project name')
-        if self.project_name == None:
-            print('No project name specified.')
+        if self.project_name is None:
+            message('No project name specified.', level="W")
 
         self.project_number = self.get_config('Options', 'project number')
         self.pcb_version = self.get_config('Options', 'pcb version')
