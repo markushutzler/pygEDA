@@ -22,7 +22,7 @@ from cmdparse import Command
 
 import pygeda.lib.schem
 from pygeda.lib.log import message
-
+from pygeda.lib.schem_obj import Component
 
 class Stat(Command):
 
@@ -33,12 +33,15 @@ class Stat(Command):
         sch = pygeda.lib.schem.Schematic(path)
         sch.open()
         sch.parse()
-        message("Object Count: {}".format(len(sch.objects)))
+        message("Object Count : {}".format(len(sch.objects)))
+        message("Components   : {}".format(len(sch.get_by_class(Component))))
+        message("Net Fragments: {}".format(len(sch.get_by_type('N'))))
 
     def print_stat(self, env):
         message("Statistics:")
         message('Schematic Files:')
         for path in env.schematic_files:
+            message('File: {}'.format(path))
             self.sch_stat(path)
 
     def run(self, env=None):

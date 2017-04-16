@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+"""This module handles schematic files."""
+
+
 from __future__ import print_function
 
 from pygeda.lib.schem_obj import *
@@ -53,8 +57,6 @@ class Schematic(object):
 
     def parse(self):
         """Reads and parses a schematic file."""
-
-        # check version
         try:
             line = self._next_line
             self.version = component_for_line(self._split(line))
@@ -62,12 +64,11 @@ class Schematic(object):
             message("Schematic File Format: "
                     "{}".format(self.version.fileformat_version), 'D')
         except Exception as exception:
-            raise exception
+            raise SchematicException()
 
         if not self.version.fileformat_version == 2:
             message('File Version {} is not supported'.format(
                 self.version.fileformat_version))
-            raise SchematicException()
 
         lnr=0
         component = None
@@ -77,23 +78,26 @@ class Schematic(object):
             if component and lnr < component.num_lines:
                 component.append_text(line)
                 lnr += 1
-
             elif line == '{':
                 parent = component
-
             elif line == '}':
                 parent = None
-
             elif parent:
                 line = self._split(line)
                 component = Attribute(line)
                 lnr = 0
                 parent.attributes.append(component)
-
             else:
                 line = self._split(line)
                 component = component_for_line(line)
                 lnr = 0
                 self.objects.append(component)
-
             line = self._next_line
+
+    def get_by_type(self, ctype):
+        """ Returns filtered list of objects by type."""
+        return  list(filter(lambda x: x.ctype == ctype, self.objects))
+
+    def get_by_class(self, cls):
+        """ Returns filtered list of objects by class."""
+        return  list(filter(lambda x: isinstance(x, cls), self.objects))
