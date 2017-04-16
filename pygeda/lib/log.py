@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+DEBUG = False
 
 def _color(level):
     if level == "W":
@@ -34,6 +35,8 @@ def _color_end(level):
 
 
 def message(message, level="R"):
+    if level.startswith('D') and not DEBUG:
+        return
     line = _color(level)
     if level == "I":
         line += "I: "

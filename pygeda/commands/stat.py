@@ -30,18 +30,18 @@ class Stat(Command):
     __help__ = "display project statistics"
 
     def sch_stat(self, path):
+        message('File {}'.format(path))
         sch = pygeda.lib.schem.Schematic(path)
         sch.open()
         sch.parse()
-        message("Object Count : {}".format(len(sch.objects)))
-        message("Components   : {}".format(len(sch.components)))
-        message("Net Fragments: {}".format(len(sch.get_by_type('N'))))
+        message("    Object Count : {}".format(len(sch.objects)))
+        message("    Components   : {}".format(len(sch.components)))
+        message("    Net Fragments: {}".format(len(sch.get_by_type('N'))))
 
     def print_stat(self, env):
         message("Statistics:")
-        message('Schematic Files:')
+        message("===========\n")
         for path in env.schematic_files:
-            message('File: {}'.format(path))
             self.sch_stat(path)
 
     def run(self, env=None):
