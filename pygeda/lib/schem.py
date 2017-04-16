@@ -99,5 +99,11 @@ class Schematic(object):
         return  list(filter(lambda x: x.ctype == ctype, self.objects))
 
     def get_by_class(self, cls):
-        """ Returns filtered list of objects by class."""
+        """Returns filtered list of objects by class."""
         return  list(filter(lambda x: isinstance(x, cls), self.objects))
+
+    @property
+    def components(self):
+        """Returns filtered list of components with refdes attribute."""
+        components = self.get_by_type('C')
+        return  list(filter(lambda x: x.refdes(), components))

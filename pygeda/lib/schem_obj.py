@@ -17,6 +17,8 @@
 
 """This module handles schematic objects."""
 
+import re
+
 
 FORMAT_LINE = [
         ['color', int],
@@ -67,11 +69,39 @@ class SchematicObject(object):
     def append_text(self, text):
         self.text.append(text)
 
+    def attribute(self, key):
+        """Returns the first attribute for a key."""
+        for i in self.attributes:
+            if i.key == key:
+                return i
+
 
 class Component(SchematicObject):
     ctype = 'C'
     fields = FORMAT_XY + [['selectable',int],['angle',int],['mirror',int],
                           ['basename',str] ]
+
+    refdes_re = re.compile(r"^(?P<base_ref>[a-zA-Z_]+?)(?P<value>[0-9?]+?)"
+                            "(?P<postfix>[a-zA-Z]*?)$")
+
+    def refdes(self, string=False):
+        """Returns the refdes of the Component.
+
+        If string=True, a string like C3 or U5a will be retuned. Otherwise, a
+        dict (see refdes_re) + error state  will be returned."""
+
+        attribute = self.attribute('refdes')
+        if attribute:
+            if string:
+                return attribute.value
+            x = self.refdes_re.match(attribute.value)
+            if x:
+                ret = x.groupdict()
+                ret['error'] = None
+                return ret
+            else:
+                return {'postfix': '', 'base_ref': '', 'value': '',
+                        'error': 'Refdes not well formated.'}
 
 
 class Version(SchematicObject):
