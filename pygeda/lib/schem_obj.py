@@ -17,12 +17,41 @@
 
 """This module handles schematic objects."""
 
-FORMAT_XY = [['x', int], ['y', int], ]
+
+FORMAT_LINE = [
+        ['color', int],
+        ['line_width', int],
+        ['capstyle', int],
+        ['dashstyle',int],
+        ['dashlength', int],
+        ['dashspace', int]
+]
+
+FORMAT_XY = [
+        ['x', int],
+        ['y', int],
+]
+
+FORMAT_2XY = [
+        ['x1', int],
+        ['y1', int],
+        ['x2', int],
+        ['y2', int],
+]
+
+FORMAT_FILL =  [
+        ['filltype', int],
+        ['fillwidth', int],
+        ['angle1', int],
+        ['pitch1', int],
+        ['angle2', int],
+        ['pitch2', int]
+]
 
 
 class SchematicObject(object):
     """Base class for Schematic objects."""
-    has_lines = False
+    num_lines = 0
 
     def __init__(self, d):
         self.attributes = []
@@ -39,17 +68,67 @@ class SchematicObject(object):
         self.text.append(text)
 
 
+class Component(SchematicObject):
+    ctype = 'C'
+    fields = FORMAT_XY + [['selectable',int],['angle',int],['mirror',int],
+                          ['basename',str] ]
+
+
 class Version(SchematicObject):
     ctype = 'v'
     fields = [['version', int], ['fileformat_version', int] ]
-    pos = None
+
+
+class Line(SchematicObject):
+    ctype = 'L'
+    fields = FORMAT_2XY  + FORMAT_LINE
+
+
+class Box(SchematicObject):
+    ctype = 'B'
+    _EXTRA = [['width', int], ['height',int], ]
+    fields = FORMAT_XY + _EXTRA + FORMAT_LINE + FORMAT_FILL
+
+
+class Circle(SchematicObject):
+    ctype = 'V'
+    fields = FORMAT_XY + [['radius', int], ] + FORMAT_LINE + FORMAT_FILL
+
+
+class Arc(SchematicObject):
+    ctype = 'A'
+    fields = FORMAT_XY + [['radius', int], ['startangle', int],
+                          ['sweepangle', int], ] + FORMAT_LINE
+
 
 class Text(SchematicObject):
-    has_lines = True
     ctype = 'T'
     fields = FORMAT_XY + [['color',int],['size',int],['visibility',int],
                           ['show_name_value',int],['angle',int],
                           ['alignment',int],['num_lines',int]]
+
+
+class Net(SchematicObject):
+    ctype = 'N'
+    fields = FORMAT_2XY + [['color', int], ]
+
+
+class Bus(SchematicObject):
+    ctype = 'U'
+    fields = FORMAT_2XY + [['color', int], ['ripperdir', int], ]
+
+
+class Pin(SchematicObject):
+    ctype = 'P'
+    fields = FORMAT_2XY + [['color', int], ['pintype', int],
+                           ['whichend', int], ]
+
+
+class Path(SchematicObject):
+    # type x1 y1 x2 y2 color pintype whichend
+    has_lines = True
+    ctype = 'H'
+    fields = FORMAT_LINE + FORMAT_FILL + [['num_lines', int], ]
 
 
 class Attribute(Text):
@@ -69,7 +148,7 @@ class UndefinedObject(SchematicObject):
 
 def component_for_line(l):
     object_types = [
-            Version, Text,
+        Version, Component, Text, Box, Net, Line, Circle, Arc, Bus, Pin, Path,
     ]
     for cls in object_types:
         if cls.ctype == l[0]:

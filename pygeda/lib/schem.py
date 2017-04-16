@@ -74,14 +74,14 @@ class Schematic(object):
         parent = None
         line = self._next_line
         while line:
-            if component and component.has_lines and lnr < component.num_lines:
+            if component and lnr < component.num_lines:
                 component.append_text(line)
                 lnr += 1
 
-            elif line[0] == '{':
+            elif line == '{':
                 parent = component
 
-            elif line[0] == '}':
+            elif line == '}':
                 parent = None
 
             elif parent:
