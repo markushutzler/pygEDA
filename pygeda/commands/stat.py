@@ -16,35 +16,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function, absolute_import, division
 
-def _color(level):
-    if level == "W":
-        return u"\033[33m"
-    if level == "E":
-        return u"\033[31m"
-    return ""
+from cmdparse import Command
 
-
-def _color_end(level):
-    if level == "W":
-        return u"\033[0m"
-    if level == "E":
-        return u"\033[0m"
-    return ""
+import pygeda.lib.schem
+from pygeda.lib.log import message
 
 
-def message(message, level="R"):
-    line = _color(level)
-    if level == "I":
-        line += "I: "
-    elif level == "W":
-        line += "W: "
-    elif level == "D":
-        line += "D: "
-    elif level == "E":
-        line += "E: "
-    else:
+class Stat(Command):
+
+    __cmd__ = "stat"
+    __help__ = "display project statistics"
+
+    def sch_stat(self, path):
+        sch = pygeda.lib.schem.Schematic(path)
+        sch.open()
+        sch.parse()
+        message("Object Count: {}".format(len(sch.objects)))
+
+    def print_stat(self, env):
+        message("Statistics:")
+        message('Schematic Files:')
+        for path in env.schematic_files:
+            self.sch_stat(path)
+
+    def run(self, env=None):
+        """Run command."""
+        self.print_stat(env)
         pass
-    line += message
-    line += _color_end(level)
-    print(line)

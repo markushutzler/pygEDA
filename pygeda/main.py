@@ -22,11 +22,13 @@ import cmdparse
 if __name__ == "__main__":
     import sys
     import os
-    path = os.path.abspath(os.path.dirname('__file__'))
-    print("DEBUG: add module to sys-path %s" % path)
+    path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+    print("DEBUG: add module to sys-path {}".format(path))
     sys.path.insert(0, path)
 
+
 from pygeda.commands.path import Path
+from pygeda.commands.stat import Stat
 import pygeda.lib.env
 
 
@@ -36,10 +38,11 @@ class Pygeda(object):
 
 
 def main():
-    parser = cmdparse.ArgumentParser(description='Process some integers.')
+    parser = cmdparse.ArgumentParser(description='pygeda')
 
     # Add commands
     parser.add_command(Path)
+    parser.add_command(Stat)
 
     # Add global options
     parser.add_argument("-c", dest="config", metavar="cfg",
