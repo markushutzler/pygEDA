@@ -29,6 +29,7 @@ if __name__ == "__main__":
 
 from pygeda.commands.path import Path
 from pygeda.commands.stat import Stat
+from pygeda.commands.unique import Unique
 import pygeda.lib.env
 
 
@@ -43,6 +44,7 @@ def main():
     # Add commands
     parser.add_command(Path)
     parser.add_command(Stat)
+    parser.add_command(Unique)
 
     # Add global options
     parser.add_argument("-c", dest="config", metavar="cfg",

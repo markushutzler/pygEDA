@@ -75,6 +75,22 @@ class SchematicObject(object):
             if i.key == key:
                 return i
 
+    def write(self, fh):
+        line = [self.ctype, ]
+        for field in self.fields:
+            line.append(str(getattr(self, field[0])))
+        fh.write(' '.join(line))
+        fh.write('\n')
+        for line in self.text:
+            fh.write(line)
+            fh.write('\n')
+        if not self.attributes:
+            return
+        fh.write('{\n')
+        for attr in self.attributes:
+            attr.write(fh)
+        fh.write('}\n')
+
 
 class Component(SchematicObject):
     ctype = 'C'
@@ -155,7 +171,6 @@ class Pin(SchematicObject):
 
 
 class Path(SchematicObject):
-    # type x1 y1 x2 y2 color pintype whichend
     has_lines = True
     ctype = 'H'
     fields = FORMAT_LINE + FORMAT_FILL + [['num_lines', int], ]

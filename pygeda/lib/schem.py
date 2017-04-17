@@ -44,6 +44,9 @@ class Schematic(object):
             message("File '{}' doesn't exist.".format(self.path), 'E')
             return False
 
+    def close(self):
+        self.fh.close()
+
     @property
     def _next_line(self):
         line = self.fh.readline()
@@ -63,6 +66,7 @@ class Schematic(object):
             message("Schematic File Verion: {}".format(self.version.version), 'D')
             message("Schematic File Format: "
                     "{}".format(self.version.fileformat_version), 'D')
+            self.objects.append(self.version)
         except Exception as exception:
             raise SchematicException()
 
@@ -94,8 +98,13 @@ class Schematic(object):
                 self.objects.append(component)
             line = self._next_line
 
+    def write(self, fh):
+        """Write to a schematic file."""
+        for o in self.objects:
+            o.write(fh)
+
     def get_by_type(self, ctype):
-        """ Returns filtered list of objects by type."""
+        """Returns filtered list of objects by type."""
         return  list(filter(lambda x: x.ctype == ctype, self.objects))
 
     def get_by_class(self, cls):
@@ -107,3 +116,16 @@ class Schematic(object):
         """Returns filtered list of components with refdes attribute."""
         components = self.get_by_type('C')
         return  list(filter(lambda x: x.refdes(), components))
+
+    @property
+    def unique_components(self):
+        """Dictionary with unique components.
+
+        Unique objects are not in the official gEDA specs. Read more about it
+        in our documentation."""
+        ret = {}
+        objects = self.components
+        for component in objects:
+            if component.attribute('uid'):
+                ret[component.attribute('uid').value] = component
+        return ret
