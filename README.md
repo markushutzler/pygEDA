@@ -1,5 +1,5 @@
 pygeda
-******
+======
 
 This project is in the very first development phase. You may not want to
 clone it.
@@ -16,46 +16,42 @@ and manipulates schematic and layout files.
 
 
 Installation
-============
+------------
 
 Pygeda is installed as a Python2 package and can be installed using the
-python setup tools::
+python setup tools:
 
     python setup.py install
 
-Dependencies
-------------
+### Dependencies
 
-* cmdparse `https://github.com/markushutzler/cmdparse`
+* [cmdparse](https://github.com/markushutzler/cmdparse)
 * gEDA
 
 
 Commands
-========
+--------
 
-Pygeda comes with a set of commands::
+Pygeda comes with a set of commands:
 
     pygeda [cmd]
 
-path
-----
+### path
 
 Print information about project pathes and applications.
 
-stat
-----
+### stat
 
 Print statistics of schematic files. This command is used for parser
 testing and debugging the python library.
 
-unique
-------
+### unique
 
 Check all components for unique IDs and add or replace IDs for new or
 dublicate components.
 
 
 License
-=======
+-------
 
 GPL3
