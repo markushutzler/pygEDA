@@ -177,13 +177,20 @@ class Path(SchematicObject):
 
 
 class Attribute(Text):
+    key = None
+    value = None
+
     def append_text(self, text):
         super(Attribute, self).append_text(text)
-        self.set(text)
+        self._set(text)
 
-    def set(self, s, parent=None):
+    def write(self, fh):
+        self.text = ['='.join([self.key, self.value]), ]
+        super(Attribute, self).write(fh)
+
+    def _set(self, s):
         self.key = s.split('=')[0]
-        self.value = "".join(s.split('=')[1:])
+        self.value = "=".join(s.split('=')[1:])
 
 
 class UndefinedObject(SchematicObject):

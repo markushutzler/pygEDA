@@ -45,8 +45,8 @@ class Unique(Command):
         if not unique_id:
             new = Attribute(['T',component.x,component.y, 0, 10, 0, 2, 0, 0, 1])
             u = self._new_uid()
-            self.uids.append(u)
-            new.append_text('uid={}'.format(u))
+            new.key = 'uid'
+            new.value = u
             component.attributes.append(new)
             message('Adding UID {}. ({})'.format(
                 str(component.attribute('uid').value),
