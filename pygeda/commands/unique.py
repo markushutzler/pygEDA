@@ -80,6 +80,9 @@ class Unique(Command):
             message('All components are unique.', 'I')
         else:
             message('{} changes made.'.format(ret), 'I')
+        if self.env.args.dry:
+            message('Dry mode - not writing anything.', 'W')
+            return ret
         fh = open(path, 'w')
         sch.write(fh)
         return ret

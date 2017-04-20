@@ -49,9 +49,12 @@ def main():
     # Add global options
     parser.add_argument("-c", dest="config", metavar="cfg",
                         help="project or config file", default="pygedarc")
+    parser.add_argument("-d", dest="dry", action="store_true", default=False,
+                        help="dry mode, do not write anything")
     args = parser.parse_args()
     command = args.command()
     env = pygeda.lib.env.Env()
+    env.args = args
     try:
         env.check_project_file(args.config)
     except IOError as error:

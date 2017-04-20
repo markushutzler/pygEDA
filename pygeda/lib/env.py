@@ -25,6 +25,7 @@ from pygeda.lib.log import message
 
 
 class Env(object):
+    args = None
     schematic_files = None
     pcb_file = None
     project_package_path = None
