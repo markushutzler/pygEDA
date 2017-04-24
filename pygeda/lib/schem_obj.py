@@ -100,6 +100,13 @@ class Component(SchematicObject):
     refdes_re = re.compile(r"^(?P<base_ref>[a-zA-Z_]+?)(?P<value>[0-9?]+?)"
                             "(?P<postfix>[a-zA-Z]*?)$")
 
+    def set_refdes(self, refdes):
+        attribute = self.attribute('refdes')
+        new = refdes["base_ref"]
+        new += refdes["value"]
+        new += refdes["postfix"]
+        attribute.value = new
+
     def refdes(self, string=False):
         """Returns the refdes of the Component.
 
