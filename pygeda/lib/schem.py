@@ -74,7 +74,7 @@ class Schematic(object):
             message('File Version {} is not supported'.format(
                 self.version.fileformat_version))
 
-        lnr=0
+        lnr = 0
         component = None
         parent = None
         line = self._next_line
@@ -100,8 +100,8 @@ class Schematic(object):
 
     def write(self, fh):
         """Write to a schematic file."""
-        for o in self.objects:
-            o.write(fh)
+        for obj in self.objects:
+            obj.write(fh)
 
     def get_by_type(self, ctype):
         """Returns filtered list of objects by type."""

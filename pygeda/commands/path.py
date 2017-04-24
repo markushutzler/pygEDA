@@ -32,19 +32,18 @@ class Path(Command):
         print('PCB :', env.pcb_path)
         print('Symbols:')
         for path in  env.symbol_path:
-            print('      ',path)
+            print('      ', path)
         print('Packages:')
         for path in  env.package_path:
-            print('      ',path)
+            print('      ', path)
         print('Schematic Files:')
         for path in  env.schematic_files:
-            print('      ',path)
+            print('      ', path)
         print('PCB File:')
-        print('      ',  env.pcb_file)
+        print('      ', env.pcb_file)
         print('Output Path:')
-        print('      ',  env.output_path)
+        print('      ', env.output_path)
 
     def run(self, env=None):
         """Run command."""
         self.print_path(env)
-        pass

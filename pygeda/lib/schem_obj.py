@@ -21,33 +21,33 @@ import re
 
 
 FORMAT_LINE = [
-        ['color', int],
-        ['line_width', int],
-        ['capstyle', int],
-        ['dashstyle',int],
-        ['dashlength', int],
-        ['dashspace', int]
+    ['color', int],
+    ['line_width', int],
+    ['capstyle', int],
+    ['dashstyle', int],
+    ['dashlength', int],
+    ['dashspace', int]
 ]
 
 FORMAT_XY = [
-        ['x', int],
-        ['y', int],
+    ['x', int],
+    ['y', int],
 ]
 
 FORMAT_2XY = [
-        ['x1', int],
-        ['y1', int],
-        ['x2', int],
-        ['y2', int],
+    ['x1', int],
+    ['y1', int],
+    ['x2', int],
+    ['y2', int],
 ]
 
-FORMAT_FILL =  [
-        ['filltype', int],
-        ['fillwidth', int],
-        ['angle1', int],
-        ['pitch1', int],
-        ['angle2', int],
-        ['pitch2', int]
+FORMAT_FILL = [
+    ['filltype', int],
+    ['fillwidth', int],
+    ['angle1', int],
+    ['pitch1', int],
+    ['angle2', int],
+    ['pitch2', int]
 ]
 
 
@@ -94,11 +94,11 @@ class SchematicObject(object):
 
 class Component(SchematicObject):
     ctype = 'C'
-    fields = FORMAT_XY + [['selectable',int],['angle',int],['mirror',int],
-                          ['basename',str] ]
+    fields = FORMAT_XY + [['selectable', int], ['angle', int], ['mirror', int],
+                          ['basename', str], ]
 
     refdes_re = re.compile(r"^(?P<base_ref>[a-zA-Z_]+?)(?P<value>[0-9?]+?)"
-                            "(?P<postfix>[a-zA-Z]*?)$")
+                           "(?P<postfix>[a-zA-Z]*?)$")
 
     def set_refdes(self, refdes):
         attribute = self.attribute('refdes')
@@ -117,8 +117,8 @@ class Component(SchematicObject):
         if attribute:
             if string:
                 return attribute.value
-            x = self.refdes_re.match(attribute.value)
-            if x:
+            match = self.refdes_re.match(attribute.value)
+            if match:
                 ret = x.groupdict()
                 ret['error'] = None
                 return ret
@@ -129,7 +129,7 @@ class Component(SchematicObject):
 
 class Version(SchematicObject):
     ctype = 'v'
-    fields = [['version', int], ['fileformat_version', int] ]
+    fields = [['version', int], ['fileformat_version', int], ]
 
 
 class Line(SchematicObject):
@@ -139,7 +139,7 @@ class Line(SchematicObject):
 
 class Box(SchematicObject):
     ctype = 'B'
-    _EXTRA = [['width', int], ['height',int], ]
+    _EXTRA = [['width', int], ['height', int], ]
     fields = FORMAT_XY + _EXTRA + FORMAT_LINE + FORMAT_FILL
 
 
@@ -156,9 +156,9 @@ class Arc(SchematicObject):
 
 class Text(SchematicObject):
     ctype = 'T'
-    fields = FORMAT_XY + [['color',int],['size',int],['visibility',int],
-                          ['show_name_value',int],['angle',int],
-                          ['alignment',int],['num_lines',int]]
+    fields = FORMAT_XY + [['color', int], ['size', int], ['visibility', int],
+                          ['show_name_value', int], ['angle', int],
+                          ['alignment', int], ['num_lines', int]]
 
 
 class Net(SchematicObject):

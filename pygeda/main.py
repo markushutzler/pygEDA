@@ -27,11 +27,11 @@ if __name__ == "__main__":
     sys.path.insert(0, path)
 
 
+import pygeda.lib.env
 from pygeda.commands.path import Path
 from pygeda.commands.stat import Stat
 from pygeda.commands.unique import Unique
 from pygeda.commands.refdes import Refdes
-import pygeda.lib.env
 
 
 class Pygeda(object):

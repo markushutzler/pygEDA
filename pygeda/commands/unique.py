@@ -20,8 +20,6 @@
 
 from __future__ import print_function, absolute_import, division
 
-import sys
-import random
 import uuid
 
 from pygeda.lib.schem import Schematic, Attribute
@@ -33,20 +31,24 @@ class Unique(Command):
     __cmd__ = 'unique'
     __help__ = 'generate or overwrite unique IDs in schematic files'
 
+    uids = None
+    env = None
+
     def _new_uid(self):
-        u = str(uuid.uuid1())
-        if u in self.uids:
-            u = self._new_uid()
-        return u
+        uid = str(uuid.uuid1())
+        if uid in self.uids:
+            uid = self._new_uid()
+        return uid
 
     def process_component(self, component):
         ret = 0
         unique_id = component.attribute('uid')
         if not unique_id:
-            new = Attribute(['T',component.x,component.y, 0, 10, 0, 2, 0, 0, 1])
-            u = self._new_uid()
+            new = Attribute(['T', component.x, component.y,
+                             0, 10, 0, 2, 0, 0, 1])
+            uid = self._new_uid()
             new.key = 'uid'
-            new.value = u
+            new.value = uid
             component.attributes.append(new)
             message('Adding UID {}. ({})'.format(
                 str(component.attribute('uid').value),
@@ -73,7 +75,6 @@ class Unique(Command):
         sch.parse()
         sch.close()
         self.uids = []
-        changes_cnt = 0
         for component in sch.components:
             ret += self.process_component(component)
         if ret == 0:

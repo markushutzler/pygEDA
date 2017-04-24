@@ -22,7 +22,7 @@ from cmdparse import Command
 
 import pygeda.lib.schem
 from pygeda.lib.log import message
-from pygeda.lib.schem_obj import Component
+
 
 class Stat(Command):
 
@@ -47,4 +47,3 @@ class Stat(Command):
     def run(self, env=None):
         """Run command."""
         self.print_stat(env)
-        pass
