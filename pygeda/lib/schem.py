@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# pygeda - Support tools for gEDA
-# Copyright (C) 2016  Markus Hutzler
+# pygeda - Support tool for Electonic Design Automation
+# Copyright (C) 2017  Markus Hutzler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 """This module handles schematic files."""
 
+from __future__ import print_function, absolute_import, division
 
-from __future__ import print_function
 
 from pygeda.lib.schem_obj import *
 from pygeda.lib.log import message

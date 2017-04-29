@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# pygeda - Support tools for gEDA
-# Copyright (C) 2016  Markus Hutzler
+# pygeda - Support tool for Electonic Design Automation
+# Copyright (C) 2017  Markus Hutzler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
