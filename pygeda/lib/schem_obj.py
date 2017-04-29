@@ -92,6 +92,60 @@ class SchematicObject(object):
         fh.write('}\n')
 
 
+class Refdes(object):
+    """Refdes Type for components."""
+    _base = "-"
+    _value = '?'
+    _part = None
+    _refdes_re = re.compile(r"^(?P<base>[a-zA-Z_]+?)(?P<value>[0-9?]+?)"
+                           "(?P<part>[a-zA-Z]*?)$")
+
+    def __init__(self, attribute):
+        self.attribute = attribute
+        match = self._refdes_re.match(attribute.value)
+        if match:
+            data = match.groupdict()
+            self._base = data.get("base")
+            self._value = data.get("value")
+            self._part = data.get("part")
+        else:
+            raise Exception()
+
+    @property
+    def string(self):
+        return ''.join([self._base, self._value, self._part])
+
+    def _update(self):
+        self.attribute.value = self.string
+
+    @property
+    def base(self):
+        return self._base
+
+    @base.setter
+    def base(self, value):
+        self._base = str(value)
+        self._update()
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = str(value)
+        self._update()
+
+    @property
+    def part(self):
+        return self._part
+
+    @part.setter
+    def part(self, value):
+        self._part = str(value)
+        self._update()
+
+
 class Component(SchematicObject):
     ctype = 'C'
     fields = FORMAT_XY + [['selectable', int], ['angle', int], ['mirror', int],
@@ -100,31 +154,14 @@ class Component(SchematicObject):
     refdes_re = re.compile(r"^(?P<base_ref>[a-zA-Z_]+?)(?P<value>[0-9?]+?)"
                            "(?P<postfix>[a-zA-Z]*?)$")
 
-    def set_refdes(self, refdes):
-        attribute = self.attribute('refdes')
-        new = refdes["base_ref"]
-        new += refdes["value"]
-        new += refdes["postfix"]
-        attribute.value = new
-
-    def refdes(self, string=False):
-        """Returns the refdes of the Component.
-
-        If string=True, a string like C3 or U5a will be retuned. Otherwise, a
-        dict (see refdes_re) + error state  will be returned."""
-
-        attribute = self.attribute('refdes')
-        if attribute:
-            if string:
-                return attribute.value
-            match = self.refdes_re.match(attribute.value)
-            if match:
-                ret = x.groupdict()
-                ret['error'] = None
-                return ret
-            else:
-                return {'postfix': '', 'base_ref': '', 'value': '',
-                        'error': 'Refdes not well formated.'}
+    @property
+    def refdes(self):
+        """Returns the refdes object."""
+        try:
+            attribute = self.attribute('refdes')
+            return Refdes(attribute)
+        except:
+            return None
 
 
 class Version(SchematicObject):

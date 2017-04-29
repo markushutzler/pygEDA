@@ -115,7 +115,7 @@ class Schematic(object):
     def components(self):
         """Returns filtered list of components with refdes attribute."""
         components = self.get_by_type('C')
-        return  list(filter(lambda x: x.refdes(), components))
+        return  list(filter(lambda x: x.refdes, components))
 
     @property
     def unique_components(self):

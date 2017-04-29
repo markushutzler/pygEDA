@@ -52,7 +52,7 @@ class Unique(Command):
             component.attributes.append(new)
             message('Adding UID {}. ({})'.format(
                 str(component.attribute('uid').value),
-                component.refdes(string=True)), 'I')
+                component.refdes.string), 'I')
             ret = 1
         else:
             if unique_id.value in self.uids:
@@ -60,7 +60,7 @@ class Unique(Command):
                 message('Changing UID {} to {}. ({})'.format(
                     str(unique_id.value),
                     new_uid,
-                    component.refdes(string=True)), 'W')
+                    component.refdes.string), 'W')
                 unique_id.value = new_uid
                 ret = 1
             else:
