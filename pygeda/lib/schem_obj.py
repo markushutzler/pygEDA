@@ -78,6 +78,15 @@ class SchematicObject(object):
             if i.key == key:
                 return i
 
+    @property
+    def position(self):
+        if hasattr(self, 'x') and hasattr(self, 'y'):
+            return [self.x, self.y]
+        if hasattr(self, 'x1') and hasattr(self, 'y1'):
+            return [self.x1, self.y1]
+        return [0, 0]
+
+
     def write(self, fh):
         line = [self.ctype, ]
         for field in self.fields:
@@ -100,10 +109,12 @@ class Refdes(object):
     _base = "-"
     _value = '?'
     _part = None
+    _component = None
     _refdes_re = re.compile(r"^(?P<base>[a-zA-Z_]+?)(?P<value>[0-9?]+?)"
-                           "(?P<part>[a-zA-Z]*?)$")
+                            "(?P<part>[a-zA-Z]*?)$")
 
-    def __init__(self, attribute):
+    def __init__(self, attribute, component=None):
+        self._component = component
         self.attribute = attribute
         match = self._refdes_re.match(attribute.value)
         if match:
@@ -117,6 +128,10 @@ class Refdes(object):
     @property
     def string(self):
         return ''.join([self._base, self._value, self._part])
+
+    @property
+    def position(self):
+        return self._component.position
 
     def _update(self):
         self.attribute.value = self.string
@@ -162,7 +177,7 @@ class Component(SchematicObject):
         """Returns the refdes object."""
         try:
             attribute = self.attribute('refdes')
-            return Refdes(attribute)
+            return Refdes(attribute, self)
         except:
             return None
 

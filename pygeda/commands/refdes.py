@@ -79,8 +79,22 @@ class RefdesPool(object):
         """List of all values for a specific bae."""
         return [i.value for i in self.filter(base)]
 
-    def enumerate(self):
+    def sort(self, sort):
+        """Sort components"""
+        if sort == "z":
+            self.pool = sorted(self.pool, key=lambda x: x.position[0])
+            self.pool = sorted(self.pool, key=lambda x:
+                               x.position[1], reverse=True)
+
+        if sort == "n":
+            self.pool = sorted(self.pool, key=lambda x:
+                               x.position[1], reverse=True)
+            self.pool = sorted(self.pool, key=lambda x: x.position[0])
+
+    def enumerate(self, sort=None):
         """Enumerate all objects."""
+        if sort:
+            self.sort(sort)
         while True:
             item = self.next_undefined()
             if not item:
@@ -115,7 +129,7 @@ class Refdes(Command):
         if self.env.args.reset:
             pool.reset_all()
         if not self.env.args.no_enum:
-            pool.enumerate()
+            pool.enumerate(sort=self.env.args.sort)
 
         if pool.changes == 0:
             message('No references where changed.', 'I')
@@ -139,5 +153,8 @@ class Refdes(Command):
                             help="reset all references")
         parser.add_argument('-f', dest='duplicates', action='store_true',
                             help="rename duplicate objects")
+        parser.add_argument('-s', dest='sort', default='z',
+                            metavar="sort",
+                            help="sort objects before enumerate [z or n]")
         parser.add_argument('--no-enum', dest='no_enum', action='store_true',
                             help="do not enumerate")
