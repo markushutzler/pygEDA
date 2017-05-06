@@ -33,6 +33,7 @@ from pygeda.commands.path import Path
 from pygeda.commands.stat import Stat
 from pygeda.commands.unique import Unique
 from pygeda.commands.refdes import Refdes
+from pygeda.commands.validate import Validate
 
 
 class Pygeda(object):
@@ -48,6 +49,7 @@ def main():
     parser.add_command(Stat)
     parser.add_command(Unique)
     parser.add_command(Refdes)
+    parser.add_command(Validate)
 
     # Add global options
     parser.add_argument("-c", dest="config", metavar="cfg",

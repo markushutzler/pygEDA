@@ -125,6 +125,9 @@ class Refdes(object):
         else:
             raise Exception()
 
+    def __str__(self):
+        return self.string
+
     @property
     def string(self):
         return ''.join([self._base, self._value, self._part])
