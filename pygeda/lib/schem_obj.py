@@ -163,6 +163,10 @@ class Refdes(object):
         self._part = str(value)
         self._update()
 
+    @property
+    def is_set(self):
+        return self._value != '?'
+
 
 class Component(SchematicObject):
     ctype = 'C'
@@ -178,6 +182,15 @@ class Component(SchematicObject):
         try:
             attribute = self.attribute('refdes')
             return Refdes(attribute, self)
+        except:
+            return None
+
+    @property
+    def uuid(self):
+        """Returns the uuid of the object."""
+        try:
+            attribute = self.attribute('uid')
+            return attribute.value
         except:
             return None
 

@@ -34,9 +34,25 @@ class Stat(Command):
         sch = pygeda.lib.schem.Schematic(path)
         sch.open()
         sch.parse()
-        message("    Object Count : {}".format(len(sch.objects)))
-        message("    Components   : {}".format(len(sch.components)))
-        message("    Net Fragments: {}".format(len(sch.get_by_type('N'))))
+        sch.close()
+        stat = {'unique': 0, 'rerdes':0}
+        uids = []
+        for component in sch.components:
+            if component.refdes.is_set:
+                stat['refdes'] = stat.get('refdes', 0) + 1
+            uuid = component.uuid
+            if uuid and uuid not in uids:
+                stat['unique'] = stat.get('unique', 0) + 1
+                uids.append(uuid)
+            elif uuid:
+                stat['duplicate'] = stat.get('duplicate', 0) + 1
+
+        message("    Object Count   : {}".format(len(sch.objects)))
+        message("    Components     : {}".format(len(sch.components)))
+        message("        with refdes: {}".format(stat.get('refdes', 0)))
+        message("        unique     : {}".format(stat.get('unique', 0)))
+        message("        duplicate  : {}".format(stat.get('duplicate', 0)))
+        message("    Net Fragments  : {}".format(len(sch.get_by_type('N'))))
 
     def print_stat(self, env):
         message("Statistics:")
