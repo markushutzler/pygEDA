@@ -33,6 +33,7 @@ class Validate(Command):
     needed_tasks = []
 
     def run(self, env):
+        self.env = env
         for path in env.schematic_files:
             self.validate_file(path)
         message('=== DONE ===')
@@ -83,16 +84,29 @@ class Validate(Command):
         # Check components
         refdes_list = []
         for comp in sch.components:
-            if not comp.refdes.is_set:
-                message('Designator of {} is not set.'.format(comp.refdes), 'E')
+            footprint = comp.attribute('footprint')
+            refdes = comp.refdes
+            if not refdes.is_set:
+                message('Designator of {} is not set.'.format(refdes), 'E')
                 self.needed_tasks.append('refdes')
+            if not self.env.sym_files(comp.basename):
+                message('Symbol \'{}\' for {} not found.'.format(comp.basename,
+                                                                 refdes), 'E')
+                self.needed_tasks.append('manually')
+            if not footprint:
+                message('Footprint for {} not defined.'.format(refdes), 'E')
+                self.needed_tasks.append('manually')
+            elif not self.env.package_files(footprint.value):
+                message('Footprint \'{}\' for {} not found.'
+                        ''.format(footprint.value, refdes), 'E')
+                self.needed_tasks.append('manually')
             if not comp.uuid:
-                message('UUID of {} is not unique.'.format(comp.refdes), 'E')
+                message('UUID of {} is not unique.'.format(refdes), 'E')
                 self.needed_tasks.append('unique')
             if comp.refdes.string in refdes_list:
-                message('Designator of {} is not unique.'.format(comp.refdes),
+                message('Designator of {} is not unique.'.format(refdes),
                         'E')
                 self.needed_tasks.append('refdes -f')
 
-            if comp.refdes.is_set:
-                refdes_list.append(comp.refdes.string)
+            if refdes.is_set:
+                refdes_list.append(refdes.string)

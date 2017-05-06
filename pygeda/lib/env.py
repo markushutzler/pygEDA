@@ -36,8 +36,8 @@ class Env(object):
     config = None
     package_path = []
     symbol_path = []
-    all_symbols = []
-    all_packages = []
+    _all_symbols = []
+    _all_packages = []
 
     gEDA_path = None
     pcb_path = None
@@ -111,6 +111,40 @@ class Env(object):
         if self.pcb_path:
             self.package_path.append(self.pcb_path+'/share/pcb/newlib')
             self.package_path.append(self.pcb_path+'/share/pcb/pcblib-newlib')
+
+    @property
+    def all_packages(self):
+        if self._all_packages:
+            return self._all_packages
+        for path in self.package_path:
+            for root, _, files in os.walk(path):
+                for filename in files:
+                    self._all_symbols.append(os.path.join(root, filename))
+        return self._all_packages
+
+    def package_files(self, filename):
+        ret = []
+        for pkg in self.all_packages:
+            if os.path.basename(pkg) == filename:
+                ret.append(pkg)
+        return ret
+
+    @property
+    def all_symbols(self):
+        if self._all_symbols:
+            return self._all_symbols
+        for path in self.symbol_path:
+            for root, _, files in os.walk(path):
+                for filename in files:
+                    self._all_symbols.append(os.path.join(root, filename))
+        return self._all_symbols
+
+    def sym_files(self, filename):
+        ret = []
+        for sym in self.all_symbols:
+            if os.path.basename(sym) == filename:
+                ret.append(sym)
+        return ret
 
     def get_config(self, section, field, default=None):
         try:
