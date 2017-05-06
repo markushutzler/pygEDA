@@ -20,30 +20,30 @@ from __future__ import print_function, absolute_import, division
 
 from cmdparse import Command
 
+from pygeda.lib.log import message
 
 class Path(Command):
 
     __cmd__ = "path"
     __help__ = "display used system path"
 
-    def print_path(self, env):
-        print()
-        print('gEDA:', env.gEDA_path)
-        print('PCB :', env.pcb_path)
-        print('Symbols:')
-        for path in  env.symbol_path:
-            print('      ', path)
-        print('Packages:')
-        for path in  env.package_path:
-            print('      ', path)
-        print('Schematic Files:')
-        for path in  env.schematic_files:
-            print('      ', path)
-        print('PCB File:')
-        print('      ', env.pcb_file)
-        print('Output Path:')
-        print('      ', env.output_path)
+    def message_path(self, env):
+        message('gEDA: {}'.format(env.gEDA_path))
+        message('PCB : {}'.format(env.pcb_path))
+        message('Symbols:')
+        for path in env.symbol_path:
+            message('    {}'.format(path))
+        message('Packages:')
+        for path in env.package_path:
+            message('    {}'.format(path))
+        message('Schematic Files:')
+        for path in env.schematic_files:
+            message('    {}'.format(path))
+        message('PCB File:')
+        message('    {}'.format(env.pcb_file))
+        message('Output Path:')
+        message('    {}'.format(env.output_path))
 
     def run(self, env=None):
         """Run command."""
-        self.print_path(env)
+        self.message_path(env)
