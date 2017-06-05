@@ -21,6 +21,7 @@ from __future__ import print_function, absolute_import, division
 from cmdparse import Command
 
 import pygeda.lib.schem
+import pygeda.lib.pcb
 from pygeda.lib.log import message
 
 
@@ -28,6 +29,14 @@ class Stat(Command):
 
     __cmd__ = "stat"
     __help__ = "display project statistics"
+
+    def pcb_stat(self, path):
+        message('File {}'.format(path))
+        pcb = pygeda.lib.pcb.PCBFile(path)
+        pcb.open()
+        pcb.parse()
+        pcb.close()
+        # TODO: Read statitics
 
     def sch_stat(self, path):
         message('File {}'.format(path))
@@ -57,8 +66,10 @@ class Stat(Command):
     def print_stat(self, env):
         message("Statistics:")
         message("===========\n")
+
         for path in env.schematic_files:
             self.sch_stat(path)
+        self.pcb_stat(env.pcb_file)
 
     def run(self, env=None):
         """Run command."""
